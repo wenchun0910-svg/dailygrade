@@ -60,12 +60,11 @@
                     <i class="fas fa-graduation-cap text-3xl"></i>
                 </div>
                 <h1 class="text-2xl sm:text-3xl font-bold text-gray-800">學生成績查詢系統</h1>
-                <p class="text-gray-500 mt-2 text-sm sm:text-base">請輸入帳號密碼並選擇評量項目</p>
+                <p id="subtitle" class="text-gray-500 mt-2 text-sm sm:text-base">請先登入以進入系統</p>
             </div>
 
-            <!-- 查詢表單 -->
-            <form id="queryForm" class="space-y-5">
-                
+            <!-- 步驟一：登入表單 -->
+            <form id="loginForm" class="space-y-5">
                 <!-- 帳號輸入 -->
                 <div>
                     <label for="account" class="block text-sm font-medium text-gray-700 mb-1">學生帳號</label>
@@ -90,66 +89,81 @@
                     </div>
                 </div>
 
-                <!-- 評量選擇 (下拉式選單) -->
-                <div>
-                    <label for="assessment" class="block text-sm font-medium text-gray-700 mb-1">選擇評量項目</label>
-                    <div class="relative">
-                        <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
-                            <i class="fas fa-list text-gray-400"></i>
-                        </div>
-                        <select id="assessment" name="assessment" required disabled
-                            class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none bg-gray-50 text-gray-500 transition-colors">
-                            <option value="">載入中...</option>
-                        </select>
-                        <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
-                            <i class="fas fa-chevron-down text-gray-400"></i>
-                        </div>
-                    </div>
-                </div>
-
-                <!-- 提交按鈕 -->
-                <button type="submit" id="submitBtn" disabled
+                <!-- 登入按鈕 -->
+                <button type="submit" id="loginBtn"
                     class="w-full flex justify-center items-center py-3 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 transition-colors disabled:bg-blue-300 disabled:cursor-not-allowed mt-6">
-                    <span id="btnText">查詢成績</span>
-                    <div id="btnSpinner" class="hidden ml-2 loader border-2 border-white rounded-full w-4 h-4"></div>
+                    <span id="loginBtnText">系統登入</span>
+                    <div id="loginSpinner" class="hidden ml-2 loader border-2 border-white rounded-full w-4 h-4"></div>
                 </button>
             </form>
 
-            <!-- 查詢結果區塊 (預設隱藏) -->
-            <div id="resultArea" class="hidden mt-8 pt-6 border-t border-gray-200 fade-in">
+            <!-- 步驟二：系統儀表板 (登入後顯示) -->
+            <div id="dashboardSection" class="hidden fade-in space-y-6">
                 
-                <!-- 學生資訊卡片 -->
-                <div class="bg-blue-50 rounded-lg p-4 flex items-center mb-6">
-                    <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
-                        <i class="fas fa-id-card text-xl"></i>
+                <!-- 學生資訊與登出卡片 -->
+                <div class="bg-blue-50 rounded-lg p-4 flex items-center justify-between border border-blue-100">
+                    <div class="flex items-center">
+                        <div class="bg-blue-100 p-3 rounded-full mr-4 text-blue-600">
+                            <i class="fas fa-user-graduate text-xl"></i>
+                        </div>
+                        <div>
+                            <p class="text-sm text-gray-500">歡迎回來</p>
+                            <p class="font-bold text-gray-800 text-lg">
+                                <span id="resSeat" class="mr-2 border-r-2 border-gray-300 pr-2"></span>
+                                <span id="resName"></span>
+                            </p>
+                        </div>
                     </div>
+                    <button type="button" onclick="logout()" class="text-sm text-gray-500 hover:text-red-500 transition-colors px-3 py-2 rounded-md hover:bg-red-50">
+                        <i class="fas fa-sign-out-alt mr-1"></i>登出
+                    </button>
+                </div>
+
+                <!-- 評量查詢表單 -->
+                <form id="queryForm" class="bg-white p-5 rounded-lg border border-gray-200 shadow-sm space-y-4">
                     <div>
-                        <p class="text-sm text-gray-500">學生資訊</p>
-                        <p class="font-bold text-gray-800 text-lg">
-                            <span id="resSeat" class="mr-2 border-r-2 border-gray-300 pr-2"></span>
-                            <span id="resName"></span>
-                        </p>
+                        <label for="assessment" class="block text-sm font-medium text-gray-700 mb-1">選擇要查詢的評量</label>
+                        <div class="relative">
+                            <div class="absolute inset-y-0 left-0 pl-3 flex items-center pointer-events-none">
+                                <i class="fas fa-list text-gray-400"></i>
+                            </div>
+                            <select id="assessment" name="assessment" required
+                                class="block w-full pl-10 pr-10 py-3 border border-gray-300 rounded-lg focus:ring-blue-500 focus:border-blue-500 sm:text-sm appearance-none transition-colors">
+                                <option value="" disabled selected>請選擇評量項目</option>
+                            </select>
+                            <div class="absolute inset-y-0 right-0 pr-3 flex items-center pointer-events-none">
+                                <i class="fas fa-chevron-down text-gray-400"></i>
+                            </div>
+                        </div>
+                    </div>
+
+                    <button type="submit" id="queryBtn"
+                        class="w-full flex justify-center items-center py-2.5 px-4 border border-transparent rounded-lg shadow-sm text-sm font-medium text-white bg-indigo-600 hover:bg-indigo-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-indigo-500 transition-colors disabled:bg-indigo-300">
+                        <span id="queryBtnText">查詢此評量成績</span>
+                        <div id="querySpinner" class="hidden ml-2 loader border-2 border-white rounded-full w-4 h-4"></div>
+                    </button>
+                </form>
+
+                <!-- 查詢結果區塊 (預設隱藏) -->
+                <div id="resultArea" class="hidden pt-4 fade-in">
+                    <h3 class="font-semibold text-gray-700 mb-3 flex items-center">
+                        <i class="fas fa-chart-bar mr-2 text-indigo-500"></i> 成績明細
+                    </h3>
+                    <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm no-scrollbar">
+                        <table class="min-w-full divide-y divide-gray-200">
+                            <thead class="bg-gray-50">
+                                <tr id="tableHead" class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
+                                    <!-- 表頭由 JS 動態產生 -->
+                                </tr>
+                            </thead>
+                            <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
+                                <!-- 資料列由 JS 動態產生 -->
+                            </tbody>
+                        </table>
                     </div>
                 </div>
 
-                <!-- 成績表格 -->
-                <h3 class="font-semibold text-gray-700 mb-3 flex items-center">
-                    <i class="fas fa-chart-bar mr-2 text-blue-500"></i> 成績明細
-                </h3>
-                <div class="overflow-x-auto rounded-lg border border-gray-200 shadow-sm no-scrollbar">
-                    <table class="min-w-full divide-y divide-gray-200">
-                        <thead class="bg-gray-50">
-                            <tr id="tableHead" class="text-left text-xs font-medium text-gray-500 uppercase tracking-wider">
-                                <!-- 表頭由 JS 動態產生 -->
-                            </tr>
-                        </thead>
-                        <tbody id="tableBody" class="bg-white divide-y divide-gray-200">
-                            <!-- 資料列由 JS 動態產生 -->
-                        </tbody>
-                    </table>
-                </div>
             </div>
-
         </div>
     </div>
 
@@ -168,167 +182,187 @@
         // ==========================================
         // 設定區
         // ==========================================
-        // 將這裡替換成您的 Google Apps Script 網頁應用程式 URL
-        // 如果為空字串，系統將啟動「模擬模式」以供介面預覽
-        const GAS_URL = ""; 
+        const GAS_URL = ""https://script.google.com/macros/s/AKfycbxoLLWzw0sdfFyfSQar21SjnJxDZEgFAOPkD87-s_1h_lgVBQhe84HQLZOEmxBD-W7GKQ/exec; 
 
         // ==========================================
         // 變數與 DOM 元素
         // ==========================================
+        let isMockMode = false;
+        let currentUser = null; // 儲存登入後的帳號密碼
+
+        const subtitle = document.getElementById('subtitle');
+        
+        // 登入區塊元素
+        const loginForm = document.getElementById('loginForm');
+        const accountInput = document.getElementById('account');
+        const passwordInput = document.getElementById('password');
+        const loginBtn = document.getElementById('loginBtn');
+        const loginBtnText = document.getElementById('loginBtnText');
+        const loginSpinner = document.getElementById('loginSpinner');
+        
+        // 系統儀表板區塊元素
+        const dashboardSection = document.getElementById('dashboardSection');
+        const resSeat = document.getElementById('resSeat');
+        const resName = document.getElementById('resName');
         const assessmentSelect = document.getElementById('assessment');
-        const submitBtn = document.getElementById('submitBtn');
-        const btnText = document.getElementById('btnText');
-        const btnSpinner = document.getElementById('btnSpinner');
+        
+        // 查詢區塊元素
         const queryForm = document.getElementById('queryForm');
+        const queryBtn = document.getElementById('queryBtn');
+        const queryBtnText = document.getElementById('queryBtnText');
+        const querySpinner = document.getElementById('querySpinner');
         const resultArea = document.getElementById('resultArea');
         const tableHead = document.getElementById('tableHead');
         const tableBody = document.getElementById('tableBody');
-        
-        let isMockMode = false;
 
-        // ==========================================
-        // 初始化與讀取下拉選單
-        // ==========================================
-        document.addEventListener('DOMContentLoaded', async () => {
+        // 初始化檢查
+        document.addEventListener('DOMContentLoaded', () => {
             if (!GAS_URL) {
                 isMockMode = true;
-                showToast('尚未設定 GAS URL，目前處於模擬資料模式。', 'warning');
-            }
-
-            try {
-                const sheets = await fetchSheets();
-                populateSelect(sheets);
-            } catch (error) {
-                showToast('無法載入評量列表，請確認網路或 API 設定。', 'error');
-                assessmentSelect.innerHTML = '<option value="">載入失敗</option>';
+                showToast('尚未設定 GAS URL，目前為模擬資料模式。', 'warning');
             }
         });
 
-        // 獲取工作表名稱 (評量項目)
-        async function fetchSheets() {
-            if (isMockMode) {
-                // 模擬延遲
-                await new Promise(r => setTimeout(r, 1000));
-                return ['第一學期第一次評量平時成績', '第一學期第二次評量平時成績', '第一學期期末評量平時成績'];
-            }
-
-            const response = await fetch(`${GAS_URL}?action=getSheets`);
-            if (!response.ok) throw new Error('Network response was not ok');
-            const data = await response.json();
-            return data.sheets;
-        }
-
-        // 填充下拉式選單
-        function populateSelect(sheets) {
-            assessmentSelect.innerHTML = '<option value="" disabled selected>請選擇評量項目</option>';
-            sheets.forEach(sheet => {
-                const option = document.createElement('option');
-                option.value = sheet;
-                option.textContent = sheet;
-                assessmentSelect.appendChild(option);
-            });
-            assessmentSelect.disabled = false;
-            assessmentSelect.classList.remove('bg-gray-50', 'text-gray-500');
-            submitBtn.disabled = false;
-        }
-
         // ==========================================
-        // 查詢成績邏輯
+        // 步驟一：系統登入邏輯
         // ==========================================
-        queryForm.addEventListener('submit', async (e) => {
+        loginForm.addEventListener('submit', async (e) => {
             e.preventDefault();
-            
-            const account = document.getElementById('account').value.trim();
-            const password = document.getElementById('password').value.trim();
-            const assessment = assessmentSelect.value;
+            const account = accountInput.value.trim();
+            const password = passwordInput.value.trim();
 
-            if (!account || !password || !assessment) {
-                showToast('請填寫完整資訊並選擇評量', 'warning');
+            if (!account || !password) {
+                showToast('請輸入帳號與密碼', 'warning');
                 return;
             }
 
-            // UI 狀態切換為載入中
-            setLoadingState(true);
-            resultArea.classList.add('hidden');
+            setLoginLoading(true);
 
             try {
-                const result = await fetchGrades(account, password, assessment);
+                const result = await performLogin(account, password);
                 
                 if (result.success) {
-                    renderGrades(result.data);
-                    showToast('查詢成功！', 'success');
+                    // 登入成功，儲存資訊並切換介面
+                    currentUser = { account, password };
+                    showToast('登入成功！', 'success');
+                    
+                    // 設定使用者資訊
+                    resSeat.textContent = `座號：${result.data.seat}`;
+                    resName.textContent = result.data.name;
+                    
+                    // 載入下拉選單 (依據後端回傳的工作表)
+                    populateSelect(result.data.sheets);
+                    
+                    // 切換畫面
+                    loginForm.classList.add('hidden');
+                    subtitle.textContent = '請選擇要查詢的評量項目';
+                    dashboardSection.classList.remove('hidden');
+                    
                 } else {
-                    showToast(result.message || '帳號或密碼錯誤，或是找不到該評量資料。', 'error');
+                    showToast(result.message || '帳號或密碼錯誤！', 'error');
                 }
             } catch (error) {
-                showToast('查詢時發生錯誤，請稍後再試。', 'error');
+                showToast('登入時發生錯誤，請稍後再試。', 'error');
                 console.error(error);
             } finally {
-                setLoadingState(false);
+                setLoginLoading(false);
             }
         });
 
-        // 獲取學生成績
+        // 執行登入 API
+        async function performLogin(account, password) {
+            if (isMockMode) {
+                await new Promise(r => setTimeout(r, 1000));
+                if (account === '112001' && password === '1234') {
+                    return {
+                        success: true,
+                        data: {
+                            seat: '01',
+                            name: '王小明',
+                            sheets: ['第一學期第一次評量平時成績', '第一學期第二次評量平時成績']
+                        }
+                    };
+                }
+                return { success: false, message: '帳號或密碼錯誤 (測試: 112001 / 1234)' };
+            }
+
+            // 新增一個 login 動作請求
+            const payload = { action: 'login', account, password };
+            const response = await fetch(GAS_URL, {
+                method: 'POST',
+                body: JSON.stringify(payload),
+                headers: { 'Content-Type': 'text/plain;charset=utf-8' }
+            });
+            if (!response.ok) throw new Error('API Request Failed');
+            return await response.json();
+        }
+
+        // ==========================================
+        // 步驟二：查詢成績邏輯
+        // ==========================================
+        queryForm.addEventListener('submit', async (e) => {
+            e.preventDefault();
+            const assessment = assessmentSelect.value;
+
+            if (!assessment) {
+                showToast('請選擇評量', 'warning');
+                return;
+            }
+
+            setQueryLoading(true);
+            resultArea.classList.add('hidden');
+
+            try {
+                // 使用登入時記錄的帳號密碼進行查詢
+                const result = await fetchGrades(currentUser.account, currentUser.password, assessment);
+                
+                if (result.success) {
+                    renderGrades(result.data.grades);
+                    showToast('成績查詢成功！', 'success');
+                } else {
+                    showToast(result.message || '找不到該評量資料。', 'error');
+                }
+            } catch (error) {
+                showToast('查詢時發生錯誤。', 'error');
+            } finally {
+                setQueryLoading(false);
+            }
+        });
+
+        // 獲取成績 API
         async function fetchGrades(account, password, sheetName) {
             if (isMockMode) {
-                await new Promise(r => setTimeout(r, 1200));
-                
-                // 模擬驗證失敗
-                if (account !== '112001' || password !== '1234') {
-                    return { success: false, message: '帳號或密碼錯誤 (測試帳號: 112001, 密碼: 1234)' };
-                }
-
-                // 模擬回傳資料
+                await new Promise(r => setTimeout(r, 800));
                 return {
                     success: true,
                     data: {
-                        seat: '01',
-                        name: '王小明',
                         grades: {
-                            '國文': 85,
-                            '英文': 92,
-                            '數學': 78,
+                            '國文': Math.floor(Math.random() * 40) + 60,
+                            '英文': Math.floor(Math.random() * 40) + 60,
+                            '數學': 55, // 測試不及格紅字
                             '社會': 88,
-                            '自然': 95,
-                            '總分': 438,
-                            '平均': 87.6
+                            '自然': 95
                         }
                     }
                 };
             }
 
-            // 實際打 API 邏輯 (使用 POST 傳遞 JSON 避免密碼暴露在 URL)
-            const payload = {
-                action: 'getGrades',
-                account: account,
-                password: password,
-                sheetName: sheetName
-            };
-
+            const payload = { action: 'getGrades', account, password, sheetName };
             const response = await fetch(GAS_URL, {
                 method: 'POST',
                 body: JSON.stringify(payload),
-                // 使用 text/plain 避免 CORS preflight 問題 (GAS 常見技巧)
                 headers: { 'Content-Type': 'text/plain;charset=utf-8' }
             });
-            
             if (!response.ok) throw new Error('API Request Failed');
             return await response.json();
         }
 
         // 渲染成績表
-        function renderGrades(data) {
-            // 填入基本資訊
-            document.getElementById('resSeat').textContent = `座號：${data.seat}`;
-            document.getElementById('resName').textContent = data.name;
-
-            // 清空表格
+        function renderGrades(grades) {
             tableHead.innerHTML = '';
             tableBody.innerHTML = '';
 
-            // 處理科目動態表頭
-            const subjects = Object.keys(data.grades);
-            
+            const subjects = Object.keys(grades);
             subjects.forEach(subject => {
                 const th = document.createElement('th');
                 th.className = 'px-4 py-3 border-b border-gray-200 bg-gray-50';
@@ -336,16 +370,14 @@
                 tableHead.appendChild(th);
             });
 
-            // 處理分數列
             const tr = document.createElement('tr');
             tr.className = 'hover:bg-gray-50 transition-colors';
             
             subjects.forEach(subject => {
-                const score = data.grades[subject];
+                const score = grades[subject];
                 const td = document.createElement('td');
                 td.className = 'px-4 py-4 whitespace-nowrap text-sm text-gray-900 border-b border-gray-200';
                 
-                // 不及格分數標記紅色
                 if (typeof score === 'number' && score < 60) {
                     td.innerHTML = `<span class="text-red-600 font-bold">${score}</span>`;
                 } else {
@@ -355,29 +387,45 @@
             });
 
             tableBody.appendChild(tr);
-            
-            // 顯示區塊
             resultArea.classList.remove('hidden');
-            // 滾動到結果區
-            resultArea.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
         }
 
         // ==========================================
-        // UI 輔助功能
+        // UI 與輔助功能
         // ==========================================
-        function setLoadingState(isLoading) {
-            if (isLoading) {
-                btnText.textContent = '查詢中...';
-                btnSpinner.classList.remove('hidden');
-                submitBtn.disabled = true;
-            } else {
-                btnText.textContent = '查詢成績';
-                btnSpinner.classList.add('hidden');
-                submitBtn.disabled = false;
-            }
+        function populateSelect(sheets) {
+            assessmentSelect.innerHTML = '<option value="" disabled selected>請選擇評量項目</option>';
+            sheets.forEach(sheet => {
+                const option = document.createElement('option');
+                option.value = sheet;
+                option.textContent = sheet;
+                assessmentSelect.appendChild(option);
+            });
         }
 
-        // 顯示通知
+        function logout() {
+            currentUser = null;
+            accountInput.value = '';
+            passwordInput.value = '';
+            dashboardSection.classList.add('hidden');
+            resultArea.classList.add('hidden');
+            loginForm.classList.remove('hidden');
+            subtitle.textContent = '請先登入以進入系統';
+            showToast('已登出系統', 'info');
+        }
+
+        function setLoginLoading(isLoading) {
+            loginBtn.disabled = isLoading;
+            loginBtnText.textContent = isLoading ? '登入中...' : '系統登入';
+            isLoading ? loginSpinner.classList.remove('hidden') : loginSpinner.classList.add('hidden');
+        }
+
+        function setQueryLoading(isLoading) {
+            queryBtn.disabled = isLoading;
+            queryBtnText.textContent = isLoading ? '查詢中...' : '查詢此評量成績';
+            isLoading ? querySpinner.classList.remove('hidden') : querySpinner.classList.add('hidden');
+        }
+
         let toastTimeout;
         function showToast(message, type = 'info') {
             const toast = document.getElementById('toast');
@@ -385,40 +433,28 @@
             const toastIcon = document.getElementById('toastIcon');
             
             toastMessage.textContent = message;
-            
-            // 重置樣式
             toast.className = 'fixed bottom-5 right-5 transform transition-all duration-300 z-50 flex items-center p-4 mb-4 rounded-lg shadow-lg';
             toastIcon.className = 'inline-flex flex-shrink-0 justify-center items-center w-8 h-8 rounded-lg';
             
-            if (type === 'success') {
-                toast.classList.add('text-green-800', 'bg-green-50');
-                toastIcon.classList.add('bg-green-100', 'text-green-500');
-                toastIcon.innerHTML = '<i class="fas fa-check"></i>';
-            } else if (type === 'error') {
-                toast.classList.add('text-red-800', 'bg-red-50');
-                toastIcon.classList.add('bg-red-100', 'text-red-500');
-                toastIcon.innerHTML = '<i class="fas fa-exclamation-triangle"></i>';
-            } else if (type === 'warning') {
-                toast.classList.add('text-yellow-800', 'bg-yellow-50');
-                toastIcon.classList.add('bg-yellow-100', 'text-yellow-500');
-                toastIcon.innerHTML = '<i class="fas fa-exclamation-circle"></i>';
-            } else {
-                toast.classList.add('text-blue-800', 'bg-blue-50');
-                toastIcon.classList.add('bg-blue-100', 'text-blue-500');
-                toastIcon.innerHTML = '<i class="fas fa-info"></i>';
-            }
+            const styles = {
+                success: { t: 'text-green-800 bg-green-50', i: 'bg-green-100 text-green-500', icon: 'fa-check' },
+                error: { t: 'text-red-800 bg-red-50', i: 'bg-red-100 text-red-500', icon: 'fa-exclamation-triangle' },
+                warning: { t: 'text-yellow-800 bg-yellow-50', i: 'bg-yellow-100 text-yellow-500', icon: 'fa-exclamation-circle' },
+                info: { t: 'text-blue-800 bg-blue-50', i: 'bg-blue-100 text-blue-500', icon: 'fa-info' }
+            };
 
-            // 顯示
+            const style = styles[type] || styles.info;
+            toast.className += ` ${style.t}`;
+            toastIcon.className += ` ${style.i}`;
+            toastIcon.innerHTML = `<i class="fas ${style.icon}"></i>`;
+
             toast.classList.remove('translate-y-20', 'opacity-0');
-            
-            // 3秒後自動隱藏
             clearTimeout(toastTimeout);
             toastTimeout = setTimeout(hideToast, 3000);
         }
 
         function hideToast() {
-            const toast = document.getElementById('toast');
-            toast.classList.add('translate-y-20', 'opacity-0');
+            document.getElementById('toast').classList.add('translate-y-20', 'opacity-0');
         }
     </script>
 </body>
